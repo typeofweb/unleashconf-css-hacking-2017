@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2/src/js.cookie.min.js"></script>
+    <script>
+        function reloadIfNeeded() {
+            let token = '';
+            try {
+                token = JSON.parse(atob(Cookies.get('foundToken')))
+            } catch (e) { }
+
+            if (token.length < 10) {
+                window.location.reload();
+            }
+        }
+    </script>
+</head>
+
+<body>
+    <h1>{{foundToken}}</h1>
+    <iframe style="visibility: hidden;" src="http://localhost:8080/" onload="reloadIfNeeded()"></iframe>
+</body>
+
+</html>

