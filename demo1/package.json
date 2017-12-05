@@ -13,7 +13,11 @@
     "nodemon": "1.12.1"
   },
   "dependencies": {
+    "h2o2": "6.0.1",
+    "handlebars": "4.0.11",
     "hapi": "16.6.2",
+    "inert": "4.2.1",
+    "vision": "4.1.1",
     "yar": "8.1.2"
   }
 }
